@@ -1,3 +1,5 @@
+require './debt'
+
 class BillsCalculator
   attr_reader :spenders, :expenses
   attr_accessor :debtors, :debtees
@@ -37,8 +39,8 @@ class BillsCalculator
     add_debts
 
     debtees.each do |d|
-      debtor = debtors.last
-      d.update_debts(d.debt, debtor)
+      new_debt = Debt.new amount: d.debt, debtor: debtors.last
+      d.update_debts new_debt
     end
   end
 

@@ -1,5 +1,3 @@
-Debt = Struct.new(:name, :amount)
-
 class Spender
   attr_reader :name, :expenses, :debt
 
@@ -37,8 +35,8 @@ class Spender
     !debtor?
   end
 
-  def update_debts(amount, debtor)
-    @debts.push(Debt.new(debtor.name, amount))
+  def update_debts(new_debt)
+    @debts.push new_debt
   end
 
   def debts_total
