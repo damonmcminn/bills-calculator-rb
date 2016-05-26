@@ -35,4 +35,17 @@ class BillsCalculatorTests < MiniTest::Test
       refute debtee.debt_paid?
     end
   end
+
+  def test_collection_sum
+    coll = Collection.new([1, 2, 3, 4])
+    assert_equal coll.sum(:abs), 10
+  end
+
+  def test_collection_filter_map
+    coll = Collection.new([1, 2, 3]).filter_map(:even?, :to_f)
+    assert_equal coll.class, Collection
+    assert_equal coll.size, 1
+    assert_equal coll.first, 2.0
+    assert_equal coll.first.class, Float
+  end
 end
