@@ -1,8 +1,13 @@
 require 'set'
+require_relative 'collection'
 
 class Array
   def uniques(key)
     map { |item| item[key] }.to_set
+  end
+
+  def to_collection
+    Collection.new(self)
   end
 end
 

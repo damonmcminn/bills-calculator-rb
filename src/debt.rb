@@ -1,5 +1,5 @@
 require 'virtus'
-require './spender'
+require_relative 'spender'
 
 class Debt
   include Virtus.model
