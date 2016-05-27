@@ -1,4 +1,6 @@
 require 'minitest/autorun'
+require 'minitest/reporters'
+Minitest::Reporters.use!
 Dir['./src/*.rb'].each { |file| require file }
 
 class BillsCalculatorTests < MiniTest::Test
@@ -47,5 +49,49 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal coll.size, 1
     assert_equal coll.first, 2.0
     assert_equal coll.first.class, Float
+  end
+
+  def test_debtee_make_payment
+    debtee = Debtee.new(debt: 100)
+    p = Payment.new(amount: 100, to: Debtor.new)
+    payment = MiniTest::Mock.new(p)
+    payment.expect :submit!, nil
+
+    debtee.make_payment(payment)
+    payment.verify
+    assert debtee.debt.zero?
+    assert_raises { debtee.make_payment(payment) }
+  end
+
+  def test_debtor_receive_payment
+    debtor = Debtor.new(owed: 1)
+    payment = Payment.new(amount: 1)
+    debtor.receive_payment(payment)
+
+    assert debtor.owed.zero?, 'Receiving payment should reduce :owed'
+    assert_equal debtor.payments.first, payment
+    assert_raises { debtor.receive_payment(payment) }
+  end
+
+  def test_payment_submit!
+    to = MiniTest::Mock.new(Debtor.new)
+    payment = Payment.new(to: to)
+    to.expect :receive_payment, nil, [payment]
+
+    payment.submit!
+    to.verify
+  end
+
+  def test_debtor_paid_in_full?
+    debtor = Debtor.new(owed: 1)
+    debtor.receive_payment(Payment.new(amount: 1))
+
+    assert debtor.paid_in_full?
+  end
+
+  def test_debtee_debts_paid?
+    debtee = Debtee.new(debt: 0)
+
+    assert debtee.debts_paid?
   end
 end
