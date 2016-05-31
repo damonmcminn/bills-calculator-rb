@@ -6,6 +6,7 @@ class Debtee
 
   attribute :name, String
   attribute :debts, Collection
+  attribute :payments, Collection
   attribute :debt, BigDecimal
 
   def update_debts(new_debt)
@@ -16,18 +17,19 @@ class Debtee
     debts.sum :amount
   end
 
-  def debt_paid?
-    (debt - debts_total).zero?
-  end
-
   def make_payment(payment)
     payment.from = self
     payment.submit!
     reduce_debt_by payment.amount
+    payments.push payment
   end
 
   def debts_paid?
     debt.zero?
+  end
+
+  def owes_money?
+    !debts_paid?
   end
 
   private

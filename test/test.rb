@@ -31,13 +31,6 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal 'SOMETHING Something DarkSide'.snake_case, 'something_something_darkside'
   end
 
-  def test_debtee_debt_paid?
-    debtee = Debtee.new(debt: 1_000_000)
-    debtee.stub :debts_total, 1_000_001 do
-      refute debtee.debt_paid?
-    end
-  end
-
   def test_collection_sum
     coll = Collection.new([1, 2, 3, 4])
     assert_equal coll.sum(:abs), 10
@@ -60,6 +53,7 @@ class BillsCalculatorTests < MiniTest::Test
     debtee.make_payment(payment)
     payment.verify
     assert debtee.debt.zero?
+    assert_equal debtee.payments.sum(:amount), 100
     assert_raises { debtee.make_payment(payment) }
   end
 
@@ -93,5 +87,58 @@ class BillsCalculatorTests < MiniTest::Test
     debtee = Debtee.new(debt: 0)
 
     assert debtee.debts_paid?
+  end
+
+  def test_debtee_owes_money?
+    debtee = Debtee.new(debt: 1)
+
+    assert debtee.owes_money?
+  end
+
+  def bills_calculator_balance_debts(expenses)
+    calc = BillsCalculator.new(expenses)
+    calc.balance_debts
+    assert calc.debts_balanced?
+    # return self for further assertions
+    calc
+  end
+
+  def test_one_debtee_one_debtor
+    expenses = [
+      Expense.new(spender: 'a', amount: 2),
+      Expense.new(spender: 'b', amount: 0)
+    ]
+    bills_calculator_balance_debts expenses
+  end
+
+  def test_two_debtors_one_debtee
+    expenses = [
+      Expense.new(spender: 'a', amount: 6),
+      Expense.new(spender: 'b', amount: 6),
+      Expense.new(spender: 'c', amount: 0)
+    ]
+    bills_calculator_balance_debts expenses
+  end
+
+  def test_two_debtors_two_debtees
+    expenses = [
+      Expense.new(spender: 'a & d', amount: 12.34),
+      Expense.new(spender: 'b', amount: 0),
+      Expense.new(spender: 'c', amount: 0)
+    ]
+    bills_calculator_balance_debts expenses
+  end
+
+  def test_bills_calculator_payments
+    expenses = [
+      Expense.new(spender: 'a', amount: 10),
+      Expense.new(spender: 'b', amount: 0),
+      Expense.new(spender: 'c', amount: 0),
+      Expense.new(spender: 'd', amount: 0),
+      Expense.new(spender: 'e', amount: 0)
+    ]
+    calc = BillsCalculator.new(expenses)
+
+    assert_equal calc.payments.size, 4
   end
 end

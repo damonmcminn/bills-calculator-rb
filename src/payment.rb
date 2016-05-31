@@ -12,4 +12,12 @@ class Payment
   def submit!
     to.receive_payment self
   end
+
+  def calc_amount(debt)
+    @amount = if debt > to.owed
+                to.owed
+              else
+                debt
+              end
+  end
 end

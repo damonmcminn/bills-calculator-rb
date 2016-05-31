@@ -7,7 +7,7 @@ class BillsCalculator
   attr_reader :spenders, :expenses, :debtors, :debtees
 
   def initialize(expenses)
-    @expenses = expenses
+    @expenses = Collection.new(expenses)
     populate
   end
 
@@ -23,35 +23,59 @@ class BillsCalculator
     total / total_people
   end
 
-  def create_debtor_and_debtee_collections
-    # https://stackoverflow.com/questions/3371518
-    # largest debt holder first
-    @debtors = @spenders.filter_map(:debtor?, :to_debtor)
-    # largest debt first
-    @debtees = @spenders.filter_map(:debtee?, :to_debtee).reverse!
-  end
-
-  def sort_by_amount_owed!
+  def calculate_amounts_owed
     @spenders.each do |spender|
       spender.calc_amount_owed(split)
     end
 
-    # sorts to to high
+    # sorts low to to high
     @spenders.sort_by!(&:amount_owed)
   end
 
-  def calculate!
-    sort_by_amount_owed!
-    create_debtor_and_debtee_collections
+  def prepare_expenses
+    calculate_amounts_owed
+    # https://stackoverflow.com/questions/3371518
+    @debtors = spenders.filter_map(:debtor?, :to_debtor)
+    # sort largest debt first
+    @debtees = spenders.filter_map(:debtee?, :to_debtee).sort_by!(&:debt)
+  end
 
-    debtees.each do |d|
-      new_debt = Debt.new(amount: d.debt, debtor: debtors.last)
-      d.update_debts new_debt
+  def balance_debts
+    prepare_expenses
+
+    debtees.each do |debtee|
+      while debtee.owes_money?
+        # sort debtors for largest owed
+        debtor = debtors.sort_by!(&:owed).reverse!.first
+        payment = Payment.new(to: debtor)
+        payment.calc_amount(debtee.debt)
+        debtee.make_payment(payment)
+      end
     end
   end
 
-  def debts_balanced?
+  def debts_paid_equals_debts_owed?
     debtees.sum(:debts_total) == debtors.sum(:owed)
+  end
+
+  def everybody_balanced?
+    debtees.all?(&:debts_paid?) && debtors.all?(&:paid_in_full?)
+  end
+
+  def debts_balanced?
+    # these methods call methods on potential nil values
+    everybody_balanced? && debts_paid_equals_debts_owed?
+  rescue
+    false
+  end
+
+  def payments
+    if debts_balanced?
+      debtees.map(&:payments).flatten
+    else
+      balance_debts
+      payments
+    end
   end
 
   private
