@@ -2,6 +2,7 @@ require_relative 'debt'
 require_relative 'collection'
 require_relative 'debtor'
 require_relative 'debtee'
+require_relative 'payment'
 
 class BillsCalculator
   attr_reader :spenders, :expenses, :debtors, :debtees
