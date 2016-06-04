@@ -79,6 +79,29 @@ class BillsCalculator
     end
   end
 
+  def result
+    expense_types = expenses.uniques(:description).reject(&:nil?)
+
+    {
+      payments: payments.map do |p|
+        { from: p.from.name, to: p.to.name, amount: p.amount.to_money }
+      end,
+      spenders: spenders.map do |s|
+        { name: s.name,
+          owes: s.debtor? ? 0.to_money : s.amount_owed.to_money,
+          share: s.share.to_money,
+          total_spend: s.total_spend.to_money
+        }
+      end,
+      expenses: expense_types.map do |type|
+        e = expenses.select { |e| e.description == type }.to_collection
+        { description: type,
+          total: e.sum(:amount).to_money,
+          dates: e.first.dates }
+      end
+    }
+  end
+
   private
 
   def populate

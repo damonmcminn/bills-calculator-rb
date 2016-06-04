@@ -142,8 +142,35 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal calc.payments.size, 4
   end
 
-  def test_bigdecimal_to_money
+  def test_numeric_to_money
     assert_equal '1.00', BigDecimal.new(1).to_money
     assert_equal '1.11', BigDecimal.new(1.11, 3).to_money
+    assert_equal '1.00', 1.to_money
+    assert_equal '1.24', 1.239.to_money
+  end
+
+  def test_bills_calculator_result
+    bills = [
+      Expense.new(spender: 'a', amount: 1, description: 'foo', dates: 'foo'),
+      Expense.new(spender: 'a', amount: 2, description: 'bar', dates: 'bar'),
+      Expense.new(spender: 'b', amount: 0),
+      Expense.new(spender: 'c', amount: 0)
+    ]
+
+    result = BillsCalculator.new(bills).result
+    payments = result[:payments]
+    spenders = result[:spenders]
+    expenses = result[:expenses]
+
+    assert_equal '1.00', payments.first[:amount]
+    assert_equal 'c', payments.last[:from]
+    assert_equal 'a', spenders.first[:name]
+    assert_equal '0.00', spenders.first[:owes]
+    assert_equal '1.00', spenders.last[:share]
+    assert_equal '3.00', spenders.first[:total_spend]
+    assert_equal 2, expenses.size
+    assert_equal 'foo', expenses.first[:description]
+    assert_equal '2.00', expenses.last[:total]
+    assert_equal 'bar', expenses.last[:dates]
   end
 end
