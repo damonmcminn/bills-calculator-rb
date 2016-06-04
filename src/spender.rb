@@ -29,8 +29,17 @@ class Spender
     Debtee.new(name: name, debt: amount_owed)
   end
 
+  def share
+    @split * members
+  end
+
+  def amount_owed
+    share - total_spend
+  end
+
   def calc_amount_owed(split)
-    @amount_owed = (split * members) - total_spend
+    @split = split
+    amount_owed
   end
 
   def debtor?
