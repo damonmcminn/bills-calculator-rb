@@ -20,6 +20,7 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     ruby-progressbar (1.8.1)
+    terminal-table (1.5.2)
     thread_safe (0.3.5)
     trollop (2.1.2)
     virtus (1.0.5)
@@ -34,6 +35,7 @@ PLATFORMS
 DEPENDENCIES
   minitest
   minitest-reporters
+  terminal-table
   trollop
   virtus
 
