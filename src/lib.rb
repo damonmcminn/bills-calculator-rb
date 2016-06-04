@@ -32,7 +32,7 @@ class String
   end
 end
 
-class BigDecimal
+class Numeric
   def to_money
     value = to_f.round(2).to_s
     value += '0' if value.split('.').last.size == 1
