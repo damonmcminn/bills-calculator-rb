@@ -1,4 +1,5 @@
 require 'set'
+require 'bigdecimal'
 require_relative 'collection'
 
 class Array
@@ -28,5 +29,13 @@ end
 class String
   def snake_case
     downcase.gsub(' ', '_')
+  end
+end
+
+class BigDecimal
+  def to_money
+    value = to_f.round(2).to_s
+    value += '0' if value.split('.').last.size == 1
+    value
   end
 end

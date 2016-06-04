@@ -141,4 +141,9 @@ class BillsCalculatorTests < MiniTest::Test
 
     assert_equal calc.payments.size, 4
   end
+
+  def test_bigdecimal_to_money
+    assert_equal '1.00', BigDecimal.new(1).to_money
+    assert_equal '1.11', BigDecimal.new(1.11, 3).to_money
+  end
 end
