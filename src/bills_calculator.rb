@@ -80,29 +80,40 @@ class BillsCalculator
   end
 
   def result
-    expense_types = expenses.uniques(:description).reject(&:nil?)
-
-    {
-      payments: payments.map do |p|
-        { from: p.from.name, to: p.to.name, amount: p.amount.to_money }
-      end,
-      spenders: spenders.map do |s|
-        { name: s.name,
-          owes: s.debtor? ? 0.to_money : s.amount_owed.to_money,
-          share: s.share.to_money,
-          total_spend: s.total_spend.to_money
-        }
-      end,
-      expenses: expense_types.map do |type|
-        e = expenses.select { |e| e.description == type }.to_collection
-        { description: type,
-          total: e.sum(:amount).to_money,
-          dates: e.first.dates }
-      end
-    }
+    Struct
+      .new(:payments, :spenders, :expenses)
+      .new(payments_result, spenders_result, expenses_result)
   end
 
   private
+
+  def payments_result
+    payments.map do |p|
+      OpenStruct.new(from: p.from.name,
+                     to: p.to.name,
+                     amount: p.amount.to_money)
+    end
+  end
+
+  def spenders_result
+    spenders.map do |s|
+      OpenStruct.new(name: s.name,
+                     owes: s.debtor? ? 0.to_money : s.amount_owed.to_money,
+                     share: s.share.to_money,
+                     total_spend: s.total_spend.to_money)
+    end
+  end
+
+  def expenses_result
+    expense_types = expenses.uniques(:description).reject(&:nil?)
+
+    expense_types.map do |type|
+      e = expenses.select { |ex| ex.description == type }.to_collection
+      OpenStruct.new(description: type,
+                     total: e.sum(:amount).to_money,
+                     dates: e.first.dates)
+    end
+  end
 
   def populate
     add_spenders

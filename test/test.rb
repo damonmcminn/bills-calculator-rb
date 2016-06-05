@@ -158,19 +158,19 @@ class BillsCalculatorTests < MiniTest::Test
     ]
 
     result = BillsCalculator.new(bills).result
-    payments = result[:payments]
-    spenders = result[:spenders]
-    expenses = result[:expenses]
+    payments = result.payments
+    spenders = result.spenders
+    expenses = result.expenses
 
-    assert_equal '1.00', payments.first[:amount]
-    assert_equal 'c', payments.last[:from]
-    assert_equal 'a', spenders.first[:name]
-    assert_equal '0.00', spenders.first[:owes]
-    assert_equal '1.00', spenders.last[:share]
-    assert_equal '3.00', spenders.first[:total_spend]
+    assert_equal '1.00', payments.first.amount
+    assert_equal 'c', payments.last.from
+    assert_equal 'a', spenders.first.name
+    assert_equal '0.00', spenders.first.owes
+    assert_equal '1.00', spenders.last.share
+    assert_equal '3.00', spenders.first.total_spend
     assert_equal 2, expenses.size
-    assert_equal 'foo', expenses.first[:description]
-    assert_equal '2.00', expenses.last[:total]
-    assert_equal 'bar', expenses.last[:dates]
+    assert_equal 'foo', expenses.first.description
+    assert_equal '2.00', expenses.last.total
+    assert_equal 'bar', expenses.last.dates
   end
 end
