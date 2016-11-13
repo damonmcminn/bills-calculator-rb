@@ -1,6 +1,7 @@
 require 'csv'
 require 'trollop'
 require 'terminal-table'
+require 'clipboard'
 
 # monkeypatches et al
 require_relative 'src/lib'
@@ -9,6 +10,7 @@ require_relative 'src/bills_calculator'
 
 opts = Trollop.options do
   opt :file, 'CSV file', type: String
+  opt :clipboard, 'Copy to clipboard'
 end
 
 Trollop.die 'Need to specify a CSV file' unless opts[:file]
@@ -41,6 +43,12 @@ expenses_table.headings = ['type',
                            { value: 'total', alignment: :right }]
 [1, 2].each { |index| expenses_table.align_column(index, :right) }
 
-puts payments_table
-puts spenders_table
-puts expenses_table
+result = [
+  payments_table,
+  spenders_table,
+  expenses_table
+].join("\n\n")
+
+puts result
+
+Clipboard.copy result if opts[:clipboard] 
