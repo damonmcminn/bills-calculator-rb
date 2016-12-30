@@ -7,6 +7,8 @@ require_relative 'payment'
 class BillsCalculator
   attr_reader :spenders, :expenses, :debtors, :debtees
 
+  EPSILON = 1.0e-3
+
   def initialize(expenses)
     @expenses = Collection.new(expenses)
     populate
@@ -55,8 +57,9 @@ class BillsCalculator
     end
   end
 
-  def debts_paid_equals_debts_owed?
-    debtees.sum(:debts_total) == debtors.sum(:owed)
+  def owed_less_paid_within_epsilon?
+    difference = (debtors.sum(:owed) - debtees.sum(:debts_total)).abs
+    difference < EPSILON
   end
 
   def everybody_balanced?
@@ -65,7 +68,7 @@ class BillsCalculator
 
   def debts_balanced?
     # these methods call methods on potential nil values
-    everybody_balanced? && debts_paid_equals_debts_owed?
+    everybody_balanced? && owed_less_paid_within_epsilon?
   rescue
     false
   end

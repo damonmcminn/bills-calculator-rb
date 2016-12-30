@@ -1,4 +1,3 @@
-ruby '2.3.1'
 source 'https://rubygems.org'
 
 gem 'virtus'
@@ -7,3 +6,4 @@ gem 'minitest'
 gem 'minitest-reporters'
 gem 'terminal-table'
 gem 'clipboard'
+gem 'timeout'

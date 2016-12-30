@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/reporters'
+require 'timeout'
+
 Minitest::Reporters.use!
 Dir['./src/*.rb'].each { |file| require file }
 
@@ -172,5 +174,21 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal 'foo', expenses.first.description
     assert_equal '2.00', expenses.last.total
     assert_equal 'bar', expenses.last.dates
+  end
+
+  def test_calculating_doesnt_cause_infinite_recursion
+    _115 = [Expense.new(spender: 'a', amount: 115, description: 'a failing test')]
+    _116 = [Expense.new(spender: 'a', amount: 116, description: 'a failing test')]
+
+    no_spend = [
+      Expense.new(spender: 'b', amount: 0),
+      Expense.new(spender: 'c', amount: 0)
+    ]
+
+    Timeout::timeout(1) { BillsCalculator.new(_115).result }
+    Timeout::timeout(1) { BillsCalculator.new(no_spend).result }
+    Timeout::timeout(1) { BillsCalculator.new(no_spend + _116).result }
+    Timeout::timeout(1) { BillsCalculator.new( _116).result }
+    Timeout::timeout(1) { BillsCalculator.new(no_spend + _115).result }
   end
 end
