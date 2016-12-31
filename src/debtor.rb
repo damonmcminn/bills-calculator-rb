@@ -4,8 +4,6 @@ require_relative 'collection'
 class Debtor
   include Virtus.model
 
-  EPSILON = 1.0e-3
-
   attribute :name, String
   attribute :owed, BigDecimal
   attribute :payments, Collection
@@ -22,6 +20,6 @@ class Debtor
   end
 
   def paid_in_full?
-    owed < EPSILON
+    owed.essentially_zero?
   end
 end

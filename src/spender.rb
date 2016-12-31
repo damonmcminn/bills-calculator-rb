@@ -33,6 +33,14 @@ class Spender
     @split * members
   end
 
+  # how amount_owed is calculated is the root of the problem
+  # tested with .NET (F#) also
+  # in the case of the debtor, share is less than total_spend
+  # this results in a negative value, but one that is FRACTIONALLY different than total_spend - (share * num_debtees)
+  # eg by 1.0e-18, which is less than Float::EPSILON
+
+  # poorly named
+  # this means how much does the spender owe
   def amount_owed
     share - total_spend
   end

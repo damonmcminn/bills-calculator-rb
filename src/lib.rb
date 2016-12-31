@@ -38,4 +38,8 @@ class Numeric
     value += '0' if value.split('.').last.size == 1
     value
   end
+
+  def essentially_zero?
+    self.abs.to_f <= Float::EPSILON
+  end
 end

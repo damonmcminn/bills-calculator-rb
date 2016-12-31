@@ -4,8 +4,6 @@ require_relative 'collection'
 class Debtee
   include Virtus.model
 
-  EPSILON = 1.0e-3
-
   attribute :name, String
   attribute :debts, Collection
   attribute :payments, Collection
@@ -27,7 +25,7 @@ class Debtee
   end
 
   def debts_paid?
-    debt < EPSILON
+    debt.essentially_zero?
   end
 
   def owes_money?
