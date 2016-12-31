@@ -3,6 +3,7 @@ require_relative 'collection'
 require_relative 'debtor'
 require_relative 'debtee'
 require_relative 'payment'
+require_relative 'result'
 
 class BillsCalculator
   attr_reader :spenders, :expenses, :debtors, :debtees
@@ -81,40 +82,10 @@ class BillsCalculator
   end
 
   def result
-    Struct
-      .new(:payments, :spenders, :expenses)
-      .new(payments_result, spenders_result, expenses_result)
+    Result.new(payments, spenders, expenses)
   end
 
   private
-
-  def payments_result
-    payments.map do |p|
-      OpenStruct.new(from: p.from.name,
-                     to: p.to.name,
-                     amount: p.amount.to_money)
-    end
-  end
-
-  def spenders_result
-    spenders.map do |s|
-      OpenStruct.new(name: s.name,
-                     owes: s.debtor? ? 0.to_money : s.amount_owed.to_money,
-                     share: s.share.to_money,
-                     total_spend: s.total_spend.to_money)
-    end
-  end
-
-  def expenses_result
-    expense_types = expenses.uniques(:description).reject(&:nil?)
-
-    expense_types.map do |type|
-      e = expenses.select { |ex| ex.description == type }.to_collection
-      OpenStruct.new(description: type,
-                     total: e.sum(:amount).to_money,
-                     dates: e.first.dates)
-    end
-  end
 
   def populate
     add_spenders
