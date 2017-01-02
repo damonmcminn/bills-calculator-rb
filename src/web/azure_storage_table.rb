@@ -2,6 +2,11 @@ require 'azure/storage'
 require 'securerandom'
 require 'json'
 
+Azure::Storage.setup({
+  storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'],
+  storage_access_key: ENV['AZURE_STORAGE_ACCESS_KEY']
+})
+
 class AzureStorageTable
   def initialize(table_name, partition_key)
     @table_name = table_name
