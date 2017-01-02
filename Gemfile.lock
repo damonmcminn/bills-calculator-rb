@@ -11,6 +11,15 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    azure-core (0.1.6)
+      faraday (~> 0.9)
+      faraday_middleware (~> 0.10)
+      nokogiri (~> 1.6)
+    azure-storage (0.11.5.preview)
+      azure-core (~> 0.1)
+      faraday (~> 0.9)
+      faraday_middleware (~> 0.10)
+      nokogiri (~> 1.6.0)
     backports (3.6.8)
     builder (3.2.2)
     clipboard (1.1.1)
@@ -20,8 +29,13 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     equalizer (0.0.11)
+    faraday (0.10.1)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.1)
+      faraday (>= 0.7.4, < 1.0)
     i18n (0.7.0)
     ice_nine (0.11.2)
+    mini_portile2 (2.1.0)
     minitest (5.8.3)
     minitest-reporters (1.1.9)
       ansi
@@ -29,8 +43,11 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     multi_json (1.12.1)
+    multipart-post (2.0.0)
     mutations (0.8.0)
       activesupport
+    nokogiri (1.6.8.1)
+      mini_portile2 (~> 2.1.0)
     puma (3.6.2)
     rack (1.6.5)
     rack-protection (1.5.3)
@@ -69,6 +86,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  azure-storage (~> 0.11.5.preview)
   clipboard
   minitest
   minitest-reporters
@@ -81,6 +99,9 @@ DEPENDENCIES
   timeout
   trollop
   virtus
+
+RUBY VERSION
+   ruby 2.3.3p222
 
 BUNDLED WITH
    1.13.6

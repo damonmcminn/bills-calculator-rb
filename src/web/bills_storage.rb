@@ -1,0 +1,1 @@
+BillsStorage = AzureStorageTable.new(ENV['BC_TABLE_NAME'], ENV['BC_PARTITION_KEY'])
