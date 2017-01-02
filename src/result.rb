@@ -27,7 +27,7 @@ class Result
     }
   end
 
-  def to_json(options)
+  def to_json(options = nil)
     to_h.to_json(options)
   end
 
