@@ -51,3 +51,6 @@ build-iPhoneSimulator/
 .rvmrc
 *.csv
 .byebug_history
+
+/*.txt
+config.yml

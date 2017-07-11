@@ -6,7 +6,7 @@ require_relative 'payment'
 require_relative 'result'
 
 class BillsCalculator
-  attr_reader :spenders, :expenses, :debtors, :debtees
+  attr_reader :spenders, :expenses, :debtors
 
   def initialize(expenses)
     @expenses = Collection.new(expenses)
@@ -25,7 +25,7 @@ class BillsCalculator
     total / total_people
   end
 
-  def calculate_amounts_owed
+  def calculate_amounts_owed!
     @spenders.each do |spender|
       spender.calc_amount_owed(split)
     end
@@ -34,16 +34,18 @@ class BillsCalculator
     @spenders.sort_by!(&:amount_owed)
   end
 
-  def prepare_expenses
-    calculate_amounts_owed
+  def debtors
     # https://stackoverflow.com/questions/3371518
-    @debtors = spenders.filter_map(:debtor?, :to_debtor)
-    # sort largest debt first
-    @debtees = spenders.filter_map(:debtee?, :to_debtee).sort_by!(&:debt)
+    @debtors ||= spenders.filter_map(:debtor?, :to_debtor)
   end
 
-  def balance_debts
-    prepare_expenses
+  def debtees
+    # sort largest debt first
+    @debtees ||= spenders.filter_map(:debtee?, :to_debtee).sort_by!(&:debt)
+  end
+
+  def balance_debts!
+    calculate_amounts_owed!
 
     debtees.each do |debtee|
       while debtee.owes_money?
@@ -76,7 +78,7 @@ class BillsCalculator
     if debts_balanced?
       debtees.map(&:payments).flatten
     else
-      balance_debts
+      balance_debts!
       payments
     end
   end

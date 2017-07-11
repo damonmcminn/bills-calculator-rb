@@ -13,16 +13,18 @@ class Array
 end
 
 class CSV
-  def self.hashify(file)
-    headers, *rows = read file
+  def self.hashify(str)
+    title, headers, *rows = parse str
 
-    rows.map do |row|
+    mapped_rows = rows.map do |row|
       r = {}
       headers.each.with_index do |header, index|
         r[header.snake_case.to_sym] = row[index]
       end
       r
     end
+
+    [title, mapped_rows]
   end
 end
 

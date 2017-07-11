@@ -1,1 +1,0 @@
-web: bundle exec ruby src/web/server.rb -p $PORT

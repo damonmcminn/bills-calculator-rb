@@ -97,9 +97,9 @@ class BillsCalculatorTests < MiniTest::Test
     assert debtee.owes_money?
   end
 
-  def bills_calculator_balance_debts(expenses)
+  def bills_calculator_balance_debts!(expenses)
     calc = BillsCalculator.new(expenses)
-    calc.balance_debts
+    calc.balance_debts!
     assert calc.debts_balanced?
     # return self for further assertions
     calc
@@ -110,7 +110,7 @@ class BillsCalculatorTests < MiniTest::Test
       Expense.new(spender: 'a', amount: 2),
       Expense.new(spender: 'b', amount: 0)
     ]
-    bills_calculator_balance_debts expenses
+    bills_calculator_balance_debts! expenses
   end
 
   def test_two_debtors_one_debtee
@@ -119,7 +119,7 @@ class BillsCalculatorTests < MiniTest::Test
       Expense.new(spender: 'b', amount: 6),
       Expense.new(spender: 'c', amount: 0)
     ]
-    bills_calculator_balance_debts expenses
+    bills_calculator_balance_debts! expenses
   end
 
   def test_two_debtors_two_debtees
@@ -128,7 +128,7 @@ class BillsCalculatorTests < MiniTest::Test
       Expense.new(spender: 'b', amount: 0),
       Expense.new(spender: 'c', amount: 0)
     ]
-    bills_calculator_balance_debts expenses
+    bills_calculator_balance_debts! expenses
   end
 
   def test_bills_calculator_payments
