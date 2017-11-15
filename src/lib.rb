@@ -19,7 +19,7 @@ class CSV
     mapped_rows = rows.map do |row|
       r = {}
       headers.each.with_index do |header, index|
-        r[header.snake_case.to_sym] = row[index]
+        r[header.snake_case.to_sym] = row[index] if header
       end
       r
     end
