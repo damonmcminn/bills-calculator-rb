@@ -38,6 +38,11 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal coll.sum(:abs), 10
   end
 
+  def test_collection_sum_handles_nil_values_as_zero
+    coll = Collection.new([nil, 1, 2, 3, 4])
+    assert_equal coll.sum(:abs), 10
+  end
+
   def test_collection_filter_map
     coll = Collection.new([1, 2, 3]).filter_map(:even?, :to_f)
     assert_equal coll.class, Collection
