@@ -5,5 +5,5 @@ class Debt
   include Virtus.model
 
   attribute :amount, BigDecimal
-  attribute :debtor, Spender
+  attribute :creditor, Spender
 end

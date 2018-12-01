@@ -47,7 +47,7 @@ class Result
     @spenders.map do |s|
       {
         name: s.name,
-        owes: s.debtor? ? 0.to_money : s.amount_owed.to_money,
+        owes: s.creditor? ? 0.to_money : s.amount_owed.to_money,
         share: s.share.to_money,
         total_spend: s.total_spend.to_money
       }

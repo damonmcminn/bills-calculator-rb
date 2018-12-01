@@ -51,31 +51,31 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal coll.first.class, Float
   end
 
-  def test_debtee_make_payment
-    debtee = Debtee.new(debt: 100)
-    p = Payment.new(amount: 100, to: Debtor.new)
+  def test_debtor_make_payment
+    debtor = Debtor.new(debt: 100)
+    p = Payment.new(amount: 100, to: Creditor.new)
     payment = MiniTest::Mock.new(p)
     payment.expect :submit!, nil
 
-    debtee.make_payment(payment)
+    debtor.make_payment(payment)
     payment.verify
-    assert debtee.debt.zero?
-    assert_equal debtee.payments.sum(:amount), 100
-    assert_raises { debtee.make_payment(payment) }
+    assert debtor.debt.zero?
+    assert_equal debtor.payments.sum(:amount), 100
+    assert_raises { debtor.make_payment(payment) }
   end
 
-  def test_debtor_receive_payment
-    debtor = Debtor.new(owed: 1)
+  def test_creditor_receive_payment
+    creditor = Creditor.new(owed: 1)
     payment = Payment.new(amount: 1)
-    debtor.receive_payment(payment)
+    creditor.receive_payment(payment)
 
-    assert debtor.owed.zero?, 'Receiving payment should reduce :owed'
-    assert_equal debtor.payments.first, payment
-    assert_raises { debtor.receive_payment(payment) }
+    assert creditor.owed.zero?, 'Receiving payment should reduce :owed'
+    assert_equal creditor.payments.first, payment
+    assert_raises { creditor.receive_payment(payment) }
   end
 
   def test_payment_submit!
-    to = MiniTest::Mock.new(Debtor.new)
+    to = MiniTest::Mock.new(Creditor.new)
     payment = Payment.new(to: to)
     to.expect :receive_payment, nil, [payment]
 
@@ -83,23 +83,23 @@ class BillsCalculatorTests < MiniTest::Test
     to.verify
   end
 
-  def test_debtor_paid_in_full?
-    debtor = Debtor.new(owed: 1)
-    debtor.receive_payment(Payment.new(amount: 1))
+  def test_creditor_paid_in_full?
+    creditor = Creditor.new(owed: 1)
+    creditor.receive_payment(Payment.new(amount: 1))
 
-    assert debtor.paid_in_full?
+    assert creditor.paid_in_full?
   end
 
-  def test_debtee_debts_paid?
-    debtee = Debtee.new(debt: 0)
+  def test_debtor_debts_paid?
+    debtor = Debtor.new(debt: 0)
 
-    assert debtee.debts_paid?
+    assert debtor.debts_paid?
   end
 
-  def test_debtee_owes_money?
-    debtee = Debtee.new(debt: 1)
+  def test_debtor_owes_money?
+    debtor = Debtor.new(debt: 1)
 
-    assert debtee.owes_money?
+    assert debtor.owes_money?
   end
 
   def bills_calculator_balance_debts!(expenses)
@@ -110,7 +110,7 @@ class BillsCalculatorTests < MiniTest::Test
     calc
   end
 
-  def test_one_debtee_one_debtor
+  def test_one_debtor_one_creditor
     expenses = [
       Expense.new(spender: 'a', amount: 2),
       Expense.new(spender: 'b', amount: 0)
@@ -118,7 +118,7 @@ class BillsCalculatorTests < MiniTest::Test
     bills_calculator_balance_debts! expenses
   end
 
-  def test_two_debtors_one_debtee
+  def test_two_creditors_one_debtor
     expenses = [
       Expense.new(spender: 'a', amount: 6),
       Expense.new(spender: 'b', amount: 6),
@@ -127,7 +127,7 @@ class BillsCalculatorTests < MiniTest::Test
     bills_calculator_balance_debts! expenses
   end
 
-  def test_two_debtors_two_debtees
+  def test_two_creditors_two_debtors
     expenses = [
       Expense.new(spender: 'a & d', amount: 12.34),
       Expense.new(spender: 'b', amount: 0),

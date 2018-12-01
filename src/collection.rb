@@ -1,6 +1,8 @@
 class Collection < Array
   def sum(property)
     reduce(0) do |total, obj|
+      next total if obj.nil?
+
       value = obj.send(property)
 
       if value.nil?

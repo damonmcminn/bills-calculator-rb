@@ -1,12 +1,12 @@
 require 'virtus'
-require_relative 'debtee'
 require_relative 'debtor'
+require_relative 'creditor'
 
 class Payment
   include Virtus.model
 
-  attribute :from, Debtee
-  attribute :to, Debtor
+  attribute :from, Debtor
+  attribute :to, Creditor
   attribute :amount, BigDecimal
 
   def submit!
