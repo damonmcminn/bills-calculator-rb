@@ -1,12 +1,11 @@
-require 'virtus'
-require_relative 'collection'
-
 class Creditor
-  include Virtus.model
+  attr_reader :name, :owed, :payments
 
-  attribute :name, String
-  attribute :owed, BigDecimal
-  attribute :payments, Collection
+  def initialize(name: '', owed: 0, payments: [])
+    @name = name
+    @owed = owed
+    @payments = payments
+  end
 
   def receive_payment(payment)
     raise ArgumentError unless can_accept? payment

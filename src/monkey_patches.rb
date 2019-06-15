@@ -1,14 +1,28 @@
 require 'set'
 require 'bigdecimal'
-require_relative 'collection'
+require 'csv'
 
 class Array
-  def uniques(key)
-    map { |item| item[key] }.to_set
+  def uniques_by(method_name)
+    map { |item| item.send(method_name) }.to_set
   end
 
-  def to_collection
-    Collection.new(self)
+  def sum(property)
+    reduce(0) do |total, obj|
+      next total if obj.nil?
+
+      value = obj.send(property)
+
+      if value.nil?
+        total
+      else
+        total + value
+      end
+    end
+  end
+
+  def filter_map(test, cast)
+    select(&test).map(&cast)
   end
 end
 

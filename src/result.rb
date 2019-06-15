@@ -55,10 +55,10 @@ class Result
   end
 
   def _expenses
-    expense_types = @expenses.uniques(:description).reject(&:nil?)
+    expense_types = @expenses.uniques_by(:description).reject(&:nil?)
 
     expense_types.map do |type|
-      e = @expenses.select { |ex| ex.description == type }.to_collection
+      e = @expenses.select { |ex| ex.description == type }
       {
         description: type,
         total: e.sum(:amount).to_money,

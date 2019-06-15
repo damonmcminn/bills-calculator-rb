@@ -1,13 +1,12 @@
-require 'virtus'
-require_relative 'collection'
-
 class Debtor
-  include Virtus.model
+  attr_reader :name, :debts, :payments, :debt
 
-  attribute :name, String
-  attribute :debts, Collection
-  attribute :payments, Collection
-  attribute :debt, BigDecimal
+  def initialize(name: '', debts: [], payments: [], debt: 0)
+    @name = name
+    @debts = debts
+    @payments = payments
+    @debt = debt
+  end
 
   def update_debts(new_debt)
     debts.push new_debt

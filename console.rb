@@ -6,8 +6,7 @@ require 'ostruct'
 require 'http'
 require 'yaml'
 
-# monkeypatches et al
-require_relative 'src/lib'
+require_relative 'src/monkey_patches'
 require_relative 'src/expense'
 require_relative 'src/bills_calculator'
 
@@ -22,10 +21,10 @@ spreadsheet_id = YAML.load_file('config.yml')['spreadsheet_id']
 sheet = "https://docs.google.com/spreadsheets/d/#{spreadsheet_id}/pub?gid=#{opts[:gid]}&single=true&output=csv"
 sheet_link = "https://docs.google.com/spreadsheets/d/#{spreadsheet_id}/view#gid=#{opts[:gid]}"
 
-csv = HTTP.get(sheet).to_s
+lines = HTTP.get(sheet).to_s
 
-title_row, rows = CSV.hashify(csv)
-bills = rows.map(&Expense.method(:new))
+title_row, rows = CSV.hashify(lines)
+bills = rows.map { |row| Expense.new(row) }
 calc = BillsCalculator.new(bills)
 
 payments = calc.result.payments.map { |p| [p[:from], p[:to], p[:amount]] }
@@ -66,4 +65,4 @@ HEREDOC
 
 puts output
 
-Clipboard.copy output if opts[:clipboard] 
+Clipboard.copy output if opts[:clipboard]

@@ -1,15 +1,14 @@
-require_relative 'debt'
-require_relative 'collection'
 require_relative 'creditor'
 require_relative 'debtor'
 require_relative 'payment'
 require_relative 'result'
+require_relative 'spender'
 
 class BillsCalculator
   attr_reader :spenders, :expenses, :creditors
 
   def initialize(expenses)
-    @expenses = Collection.new(expenses)
+    @expenses = expenses
     populate
   end
 
@@ -96,9 +95,9 @@ class BillsCalculator
 
   def add_spenders
     @spenders = @expenses
-                .uniques(:spender)
+                .uniques_by(:spender)
                 .collect(&Spender.method(:new))
-                .to_collection
+
   end
 
   def map_expenses

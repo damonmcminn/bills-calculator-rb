@@ -1,4 +1,3 @@
-require_relative 'collection'
 require_relative 'creditor'
 
 class Spender
@@ -6,7 +5,7 @@ class Spender
 
   def initialize(name)
     @name = name
-    @expenses = Collection.new
+    @expenses = []
   end
 
   def members

@@ -33,22 +33,22 @@ class BillsCalculatorTests < MiniTest::Test
     assert_equal 'SOMETHING Something DarkSide'.snake_case, 'something_something_darkside'
   end
 
-  def test_collection_sum
-    coll = Collection.new([1, 2, 3, 4])
-    assert_equal coll.sum(:abs), 10
+  def test_array_sum
+    xs = [1, 2, 3, 4]
+    assert_equal xs.sum(:abs), 10
   end
 
-  def test_collection_sum_handles_nil_values_as_zero
-    coll = Collection.new([nil, 1, 2, 3, 4])
-    assert_equal coll.sum(:abs), 10
+  def test_array_sum_handles_nil_values_as_zero
+    xs = [nil, 1, 2, 3, 4]
+    assert_equal xs.sum(:abs), 10
   end
 
-  def test_collection_filter_map
-    coll = Collection.new([1, 2, 3]).filter_map(:even?, :to_f)
-    assert_equal coll.class, Collection
-    assert_equal coll.size, 1
-    assert_equal coll.first, 2.0
-    assert_equal coll.first.class, Float
+  def test_array_filter_map
+    xs = [1, 2, 3].filter_map(:even?, :to_f)
+    assert_equal xs.class, Array
+    assert_equal xs.size, 1
+    assert_equal xs.first, 2.0
+    assert_equal xs.first.class, Float
   end
 
   def test_debtor_make_payment
@@ -150,8 +150,8 @@ class BillsCalculatorTests < MiniTest::Test
   end
 
   def test_numeric_to_money
-    assert_equal '1.00', BigDecimal.new(1).to_money
-    assert_equal '1.11', BigDecimal.new(1.11, 3).to_money
+    assert_equal '1.00', BigDecimal(1).to_money
+    assert_equal '1.11', BigDecimal(1.11, 3).to_money
     assert_equal '1.00', 1.to_money
     assert_equal '1.24', 1.239.to_money
   end

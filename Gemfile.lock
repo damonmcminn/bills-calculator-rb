@@ -4,19 +4,10 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     ansi (1.5.0)
-    axiom-types (0.1.1)
-      descendants_tracker (~> 0.0.4)
-      ice_nine (~> 0.11.0)
-      thread_safe (~> 0.3, >= 0.3.1)
     builder (3.2.2)
     clipboard (1.1.1)
-    coercible (1.0.0)
-      descendants_tracker (~> 0.0.1)
-    descendants_tracker (0.0.4)
-      thread_safe (~> 0.3, >= 0.3.1)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
-    equalizer (0.0.11)
     http (3.0.0)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -26,7 +17,6 @@ GEM
       domain_name (~> 0.5)
     http-form_data (2.0.0)
     http_parser.rb (0.6.0)
-    ice_nine (0.11.2)
     minitest (5.8.3)
     minitest-reporters (1.1.9)
       ansi
@@ -36,7 +26,6 @@ GEM
     public_suffix (3.0.2)
     ruby-progressbar (1.8.1)
     terminal-table (1.5.2)
-    thread_safe (0.3.5)
     timeout (0.0.1)
       timeout-extensions
     timeout-extensions (0.1.1)
@@ -44,11 +33,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    virtus (1.0.5)
-      axiom-types (~> 0.1)
-      coercible (~> 1.0)
-      descendants_tracker (~> 0.0, >= 0.0.3)
-      equalizer (~> 0.0, >= 0.0.9)
 
 PLATFORMS
   ruby
@@ -61,7 +45,6 @@ DEPENDENCIES
   terminal-table
   timeout
   trollop
-  virtus
 
 BUNDLED WITH
-   1.16.1
+   1.17.3
